@@ -73,7 +73,6 @@
 				E83272C82CD15B7500312C13 /* Extensions */,
 				E83272D02CD1727000312C13 /* Resources */,
 				E83272C02CD1576700312C13 /* Info.plist */,
-				E83272D12CD172D100312C13 /* WishColor.swift */,
 			);
 			path = "Petyanov HW2";
 			sourceTree = "<group>";
@@ -124,6 +123,7 @@
 		E83272D32CD172F400312C13 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				E83272D12CD172D100312C13 /* WishColor.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
