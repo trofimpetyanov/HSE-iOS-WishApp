@@ -13,7 +13,7 @@
 		E8F4413D2CD7D50700D29C7C /* TitledSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8F4412B2CD7D50600D29C7C /* TitledSlider.swift */; };
 		E8F4413E2CD7D50700D29C7C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E8F4412D2CD7D50600D29C7C /* Assets.xcassets */; };
 		E8F4413F2CD7D50700D29C7C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E8F4412F2CD7D50600D29C7C /* LaunchScreen.storyboard */; };
-		E8F441402CD7D50700D29C7C /* WishMakeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8F441312CD7D50600D29C7C /* WishMakeViewController.swift */; };
+		E8F441402CD7D50700D29C7C /* WishMakerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8F441312CD7D50600D29C7C /* WishMakerViewController.swift */; };
 		E8F441412CD7D50700D29C7C /* UIColor+HEX.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8F441332CD7D50700D29C7C /* UIColor+HEX.swift */; };
 		E8F441422CD7D50700D29C7C /* UIColor+IdealTextColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8F441342CD7D50700D29C7C /* UIColor+IdealTextColor.swift */; };
 		E8F441432CD7D50700D29C7C /* UIColor+RGB.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8F441352CD7D50700D29C7C /* UIColor+RGB.swift */; };
@@ -29,7 +29,7 @@
 		E8F4412B2CD7D50600D29C7C /* TitledSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TitledSlider.swift; sourceTree = "<group>"; };
 		E8F4412D2CD7D50600D29C7C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E8F4412E2CD7D50600D29C7C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		E8F441312CD7D50600D29C7C /* WishMakeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WishMakeViewController.swift; sourceTree = "<group>"; };
+		E8F441312CD7D50600D29C7C /* WishMakerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WishMakerViewController.swift; sourceTree = "<group>"; };
 		E8F441332CD7D50700D29C7C /* UIColor+HEX.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+HEX.swift"; sourceTree = "<group>"; };
 		E8F441342CD7D50700D29C7C /* UIColor+IdealTextColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+IdealTextColor.swift"; sourceTree = "<group>"; };
 		E8F441352CD7D50700D29C7C /* UIColor+RGB.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+RGB.swift"; sourceTree = "<group>"; };
@@ -114,7 +114,7 @@
 		E8F441322CD7D50600D29C7C /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				E8F441312CD7D50600D29C7C /* WishMakeViewController.swift */,
+				E8F441312CD7D50600D29C7C /* WishMakerViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -220,7 +220,7 @@
 				E8F441412CD7D50700D29C7C /* UIColor+HEX.swift in Sources */,
 				E8F441422CD7D50700D29C7C /* UIColor+IdealTextColor.swift in Sources */,
 				E8F4413A2CD7D50700D29C7C /* WishColor.swift in Sources */,
-				E8F441402CD7D50700D29C7C /* WishMakeViewController.swift in Sources */,
+				E8F441402CD7D50700D29C7C /* WishMakerViewController.swift in Sources */,
 				E8F441442CD7D50700D29C7C /* UIView+Pin.swift in Sources */,
 				E8F4413D2CD7D50700D29C7C /* TitledSlider.swift in Sources */,
 				E8F4413C2CD7D50700D29C7C /* SceneDelegate.swift in Sources */,

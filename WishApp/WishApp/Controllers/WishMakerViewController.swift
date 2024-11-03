@@ -1,6 +1,6 @@
 import UIKit
 
-final class WishMakeViewController: UIViewController {
+final class WishMakerViewController: UIViewController {
     
     // MARK: Constants
     enum Constants {
@@ -34,23 +34,13 @@ final class WishMakeViewController: UIViewController {
             static let randomize = "Randomize"
             static let colorPicker = "Color Picker"
             
-            static let hideControls = "Hide Controls"
-            static let showControls = "Show Controls"
+            static let myWishes = "My Wishes"
         }
     }
     
     // MARK: – UI
     
     // MARK: Labels
-    private lazy var titleLabel: UILabel = {
-        let label = UILabel()
-        label.text = Constants.Strings.title
-        label.textColor = .white
-        label.font = .boldSystemFont(ofSize: UIFont.preferredFont(forTextStyle: .largeTitle).pointSize)
-        
-        return label
-    }()
-    
     private lazy var descriptionLabel: UILabel = {
         let label = UILabel()
         label.text = Constants.Strings.description
@@ -131,14 +121,14 @@ final class WishMakeViewController: UIViewController {
         return button
     }()
     
-    private lazy var toggleSlidersButton: UIButton = {
+    private lazy var myWishesButton: UIButton = {
         var configuration = UIButton.Configuration.filled()
-        configuration.title = Constants.Strings.hideControls
+        configuration.title = Constants.Strings.myWishes
         configuration.cornerStyle = .large
         
         let button = UIButton(configuration: configuration)
         let action = UIAction { [weak self] _ in
-            self?.toggleSliders()
+            self?.showMyWishes()
         }
         
         button.addAction(action, for: .touchUpInside)
@@ -147,15 +137,6 @@ final class WishMakeViewController: UIViewController {
     }()
     
     // MARK: Stack Views
-    private lazy var labelsStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.spacing = Constants.Layout.padding
-        stackView.addArrangedSubview(titleLabel)
-        stackView.addArrangedSubview(descriptionLabel)
-        return stackView
-    }()
-    
     private lazy var slidersStackView: UIStackView = {
         let stackView = UIStackView()
         
@@ -217,27 +198,53 @@ final class WishMakeViewController: UIViewController {
     private func setupUI() {
         view.backgroundColor = wishColor.color
         
-        // Labels Stack View
-        view.addSubview(labelsStackView)
-        labelsStackView.pinEdges(
+        setupNavigationBar()
+        setupLabels()
+        setupMyWishesButton()
+        setupControls()
+    }
+    
+    private func setupNavigationBar() {
+        navigationItem.title = Constants.Strings.title
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationController?.navigationBar.largeTitleTextAttributes = [.foregroundColor: wishColor.color.idealTextColor]
+        
+        let showControlsAction = UIAction { [weak self] _ in
+            self?.toggleControls()
+        }
+        
+        let settingsBarButtonItem = UIBarButtonItem(
+            image: UIImage(systemName: "slider.horizontal.2.square"),
+            primaryAction: showControlsAction
+        )
+        
+        navigationItem.rightBarButtonItem = settingsBarButtonItem
+    }
+    
+    private func setupLabels() {
+        view.addSubview(descriptionLabel)
+        descriptionLabel.pinEdges(
             [.top, .leading, .trailing],
             to: view,
             constant: Constants.Layout.padding
         )
-        
-        // Toggle Sliders Button
-        view.addSubview(toggleSlidersButton)
-        toggleSlidersButton.pinHeight(Constants.Layout.primaryButtonHeight)
-        toggleSlidersButton.pinEdges(
+    }
+    
+    private func setupMyWishesButton() {
+        view.addSubview(myWishesButton)
+        myWishesButton.pinHeight(Constants.Layout.primaryButtonHeight)
+        myWishesButton.pinEdges(
             [.leading, .trailing, .bottom],
             to: view,
             constant: Constants.Layout.padding
         )
-        
+    }
+    
+    private func setupControls() {
         // Controls View
         view.addSubview(controlsView)
         controlsView.pinHorizontal(to: view, Constants.Layout.padding)
-        controlsView.pinBottomToTop(of: toggleSlidersButton, constant: Constants.Layout.padding)
+        controlsView.pinBottomToTop(of: myWishesButton, constant: Constants.Layout.padding)
         
         // Blur View
         blurView.pinEdges(
@@ -260,7 +267,7 @@ final class WishMakeViewController: UIViewController {
     
     // MARK: Update
     private func updateUI() {
-        titleLabel.textColor = wishColor.color.idealTextColor
+        navigationController?.navigationBar.largeTitleTextAttributes = [.foregroundColor: wishColor.color.idealTextColor]
         descriptionLabel.textColor = wishColor.color.idealTextColor
         
         redSlider.slider.setValue(Float(wishColor.red), animated: true)
@@ -295,9 +302,8 @@ final class WishMakeViewController: UIViewController {
         present(colorPicker, animated: true)
     }
     
-    private func toggleSliders() {
+    private func toggleControls() {
         areControlsHidden.toggle()
-        toggleSlidersButton.configuration?.title = areControlsHidden ? Constants.Strings.showControls : Constants.Strings.hideControls
         
         if areControlsHidden {
             UIView.animate(withDuration: Constants.Settings.animationDuratione) {
@@ -313,9 +319,14 @@ final class WishMakeViewController: UIViewController {
             }
         }
     }
+    
+    // MARK: Navigation
+    private func showMyWishes() {
+        // TODO: Implement segue.
+    }
 }
 
-extension WishMakeViewController: UIColorPickerViewControllerDelegate {
+extension WishMakerViewController: UIColorPickerViewControllerDelegate {
     func colorPickerViewController(_ viewController: UIColorPickerViewController, didSelect color: UIColor, continuously: Bool) {
         let (red, green, blue) = color.components()
         wishColor.red = red
