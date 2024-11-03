@@ -1,10 +1,3 @@
-//
-//  AppDelegate.swift
-//  Petyanov HW2
-//
-//  Created by Trofim Petianov on 29.10.2024.
-//
-
 import UIKit
 
 @main
