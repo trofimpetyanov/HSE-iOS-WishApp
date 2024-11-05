@@ -3,7 +3,7 @@ import UIKit
 final class WishMakerViewController: UIViewController {
     
     // MARK: Constants
-    enum Constants {
+    private enum Constants {
         enum Layout {
             static let zero: CGFloat = 0
             static let spacing: CGFloat = 8
@@ -322,7 +322,10 @@ final class WishMakerViewController: UIViewController {
     
     // MARK: Navigation
     private func showMyWishes() {
-        // TODO: Implement segue.
+        let wishStoringTableViewController = WishStoringTableViewController()
+        let navigationController = UINavigationController(rootViewController: wishStoringTableViewController)
+        
+        present(navigationController, animated: true)
     }
 }
 

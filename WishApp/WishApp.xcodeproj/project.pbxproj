@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E8A0CC6B2CDA8B3F003BA55E /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8A0CC6A2CDA8B3F003BA55E /* Storage.swift */; };
+		E8A0CC6D2CDA8BB0003BA55E /* UserDefaultStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8A0CC6C2CDA8BB0003BA55E /* UserDefaultStorage.swift */; };
+		E8A0CC6F2CDA8CAF003BA55E /* Storagable.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8A0CC6E2CDA8CAF003BA55E /* Storagable.swift */; };
 		E8F4413A2CD7D50700D29C7C /* WishColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8F441262CD7D50600D29C7C /* WishColor.swift */; };
 		E8F4413B2CD7D50700D29C7C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8F441282CD7D50600D29C7C /* AppDelegate.swift */; };
 		E8F4413C2CD7D50700D29C7C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8F441292CD7D50600D29C7C /* SceneDelegate.swift */; };
@@ -18,9 +21,18 @@
 		E8F441422CD7D50700D29C7C /* UIColor+IdealTextColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8F441342CD7D50700D29C7C /* UIColor+IdealTextColor.swift */; };
 		E8F441432CD7D50700D29C7C /* UIColor+RGB.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8F441352CD7D50700D29C7C /* UIColor+RGB.swift */; };
 		E8F441442CD7D50700D29C7C /* UIView+Pin.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8F441372CD7D50700D29C7C /* UIView+Pin.swift */; };
+		E8F441462CD7DC9000D29C7C /* WishStoringTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8F441452CD7DC9000D29C7C /* WishStoringTableViewController.swift */; };
+		E8F4414A2CD7DCD900D29C7C /* WishStoringTableViewController+DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8F441492CD7DCD900D29C7C /* WishStoringTableViewController+DataSource.swift */; };
+		E8F4414C2CD7DD6C00D29C7C /* Wish.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8F4414B2CD7DD6C00D29C7C /* Wish.swift */; };
+		E8F4414E2CD7E8BF00D29C7C /* WishesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8F4414D2CD7E8BF00D29C7C /* WishesStore.swift */; };
+		E8F441522CD7F6FA00D29C7C /* AddWishContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8F441512CD7F6FA00D29C7C /* AddWishContentView.swift */; };
+		E8F441552CD7F73C00D29C7C /* UIContentConfiguration+Stateless.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8F441542CD7F73C00D29C7C /* UIContentConfiguration+Stateless.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E8A0CC6A2CDA8B3F003BA55E /* Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storage.swift; sourceTree = "<group>"; };
+		E8A0CC6C2CDA8BB0003BA55E /* UserDefaultStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultStorage.swift; sourceTree = "<group>"; };
+		E8A0CC6E2CDA8CAF003BA55E /* Storagable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storagable.swift; sourceTree = "<group>"; };
 		E8F4410F2CD7D4EE00D29C7C /* WishApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WishApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8F441202CD7D4EF00D29C7C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E8F441262CD7D50600D29C7C /* WishColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WishColor.swift; sourceTree = "<group>"; };
@@ -34,6 +46,12 @@
 		E8F441342CD7D50700D29C7C /* UIColor+IdealTextColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+IdealTextColor.swift"; sourceTree = "<group>"; };
 		E8F441352CD7D50700D29C7C /* UIColor+RGB.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+RGB.swift"; sourceTree = "<group>"; };
 		E8F441372CD7D50700D29C7C /* UIView+Pin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Pin.swift"; sourceTree = "<group>"; };
+		E8F441452CD7DC9000D29C7C /* WishStoringTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WishStoringTableViewController.swift; sourceTree = "<group>"; };
+		E8F441492CD7DCD900D29C7C /* WishStoringTableViewController+DataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WishStoringTableViewController+DataSource.swift"; sourceTree = "<group>"; };
+		E8F4414B2CD7DD6C00D29C7C /* Wish.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wish.swift; sourceTree = "<group>"; };
+		E8F4414D2CD7E8BF00D29C7C /* WishesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WishesStore.swift; sourceTree = "<group>"; };
+		E8F441512CD7F6FA00D29C7C /* AddWishContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddWishContentView.swift; sourceTree = "<group>"; };
+		E8F441542CD7F73C00D29C7C /* UIContentConfiguration+Stateless.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIContentConfiguration+Stateless.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,6 +88,7 @@
 				E8F441272CD7D50600D29C7C /* Models */,
 				E8F4412C2CD7D50600D29C7C /* Views */,
 				E8F441322CD7D50600D29C7C /* Controllers */,
+				E8F4414F2CD7E90900D29C7C /* Service */,
 				E8F441392CD7D50700D29C7C /* Extensions */,
 				E8F441302CD7D50600D29C7C /* Resources */,
 				E8F441202CD7D4EF00D29C7C /* Info.plist */,
@@ -81,6 +100,7 @@
 			isa = PBXGroup;
 			children = (
 				E8F441262CD7D50600D29C7C /* WishColor.swift */,
+				E8F4414B2CD7DD6C00D29C7C /* Wish.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -98,6 +118,7 @@
 			isa = PBXGroup;
 			children = (
 				E8F4412B2CD7D50600D29C7C /* TitledSlider.swift */,
+				E8F441502CD7F6B100D29C7C /* ContentViews */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -114,7 +135,8 @@
 		E8F441322CD7D50600D29C7C /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				E8F441312CD7D50600D29C7C /* WishMakerViewController.swift */,
+				E8F441472CD7DCA700D29C7C /* WishMaker */,
+				E8F441482CD7DCAE00D29C7C /* WIshStoring */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -140,10 +162,55 @@
 		E8F441392CD7D50700D29C7C /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				E8F441532CD7F71000D29C7C /* UIContentView */,
 				E8F441362CD7D50700D29C7C /* UIColor */,
 				E8F441382CD7D50700D29C7C /* UIView */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		E8F441472CD7DCA700D29C7C /* WishMaker */ = {
+			isa = PBXGroup;
+			children = (
+				E8F441312CD7D50600D29C7C /* WishMakerViewController.swift */,
+			);
+			path = WishMaker;
+			sourceTree = "<group>";
+		};
+		E8F441482CD7DCAE00D29C7C /* WIshStoring */ = {
+			isa = PBXGroup;
+			children = (
+				E8F441452CD7DC9000D29C7C /* WishStoringTableViewController.swift */,
+				E8F441492CD7DCD900D29C7C /* WishStoringTableViewController+DataSource.swift */,
+			);
+			path = WIshStoring;
+			sourceTree = "<group>";
+		};
+		E8F4414F2CD7E90900D29C7C /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				E8F4414D2CD7E8BF00D29C7C /* WishesStore.swift */,
+				E8A0CC6A2CDA8B3F003BA55E /* Storage.swift */,
+				E8A0CC6E2CDA8CAF003BA55E /* Storagable.swift */,
+				E8A0CC6C2CDA8BB0003BA55E /* UserDefaultStorage.swift */,
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
+		E8F441502CD7F6B100D29C7C /* ContentViews */ = {
+			isa = PBXGroup;
+			children = (
+				E8F441512CD7F6FA00D29C7C /* AddWishContentView.swift */,
+			);
+			path = ContentViews;
+			sourceTree = "<group>";
+		};
+		E8F441532CD7F71000D29C7C /* UIContentView */ = {
+			isa = PBXGroup;
+			children = (
+				E8F441542CD7F73C00D29C7C /* UIContentConfiguration+Stateless.swift */,
+			);
+			path = UIContentView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -217,14 +284,23 @@
 			buildActionMask = 2147483647;
 			files = (
 				E8F4413B2CD7D50700D29C7C /* AppDelegate.swift in Sources */,
+				E8A0CC6F2CDA8CAF003BA55E /* Storagable.swift in Sources */,
 				E8F441412CD7D50700D29C7C /* UIColor+HEX.swift in Sources */,
 				E8F441422CD7D50700D29C7C /* UIColor+IdealTextColor.swift in Sources */,
+				E8A0CC6D2CDA8BB0003BA55E /* UserDefaultStorage.swift in Sources */,
 				E8F4413A2CD7D50700D29C7C /* WishColor.swift in Sources */,
+				E8F4414C2CD7DD6C00D29C7C /* Wish.swift in Sources */,
+				E8F441552CD7F73C00D29C7C /* UIContentConfiguration+Stateless.swift in Sources */,
 				E8F441402CD7D50700D29C7C /* WishMakerViewController.swift in Sources */,
 				E8F441442CD7D50700D29C7C /* UIView+Pin.swift in Sources */,
+				E8F4414E2CD7E8BF00D29C7C /* WishesStore.swift in Sources */,
+				E8F4414A2CD7DCD900D29C7C /* WishStoringTableViewController+DataSource.swift in Sources */,
 				E8F4413D2CD7D50700D29C7C /* TitledSlider.swift in Sources */,
 				E8F4413C2CD7D50700D29C7C /* SceneDelegate.swift in Sources */,
 				E8F441432CD7D50700D29C7C /* UIColor+RGB.swift in Sources */,
+				E8A0CC6B2CDA8B3F003BA55E /* Storage.swift in Sources */,
+				E8F441522CD7F6FA00D29C7C /* AddWishContentView.swift in Sources */,
+				E8F441462CD7DC9000D29C7C /* WishStoringTableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
