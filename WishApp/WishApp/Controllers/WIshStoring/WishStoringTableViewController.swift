@@ -20,9 +20,17 @@ final class WishStoringTableViewController: UITableViewController {
         }
     }
     
+    private var wishesStore: WishesStore
     private var dataSource: DataSource!
     
-    init() {
+    init(storageType: WishesStore.StorageType = .coreData) {
+        switch storageType {
+        case .userDefaults:
+            wishesStore = WishesStore(storage: UserDefaultStorage<Wish>())
+        case .coreData:
+            wishesStore = WishesStore(storage: UserDefaultStorage<Wish>())
+        }
+        
         super.init(style: .insetGrouped)
     }
     
@@ -39,12 +47,34 @@ final class WishStoringTableViewController: UITableViewController {
         
         updateSnapshot()
     }
+    
+    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        guard
+            let item = dataSource.itemIdentifier(for: indexPath),
+            case .wish(let wish) = item
+        else { return nil }
+        
+        let deleteAction = UIContextualAction(
+            style: .destructive,
+            title: Constants.Strings.deleteAction
+        ) { [weak self] _, _, completion in
+            self?.wishesStore.remove(wish)
+            
+            completion(true)
+        }
+        
+        deleteAction.image = UIImage(systemName: "trash")
+        
+        return UISwipeActionsConfiguration(actions: [deleteAction])
+    }
 
     private func updateSnapshot() {
+        let wishes = wishesStore.wishes.map { Row.wish($0) }
+        
         var snapshot = Snapshot()
         snapshot.appendSections([.newWish, .wishes])
         snapshot.appendItems([.newWish], toSection: .newWish)
-        snapshot.appendItems([.wish(Wish(title: "Be an astronaut"))], toSection: .wishes)
+        snapshot.appendItems(wishes, toSection: .wishes)
         dataSource.apply(snapshot)
     }
     
@@ -75,6 +105,18 @@ final class WishStoringTableViewController: UITableViewController {
     }
 
     private func setupDataSource() {
+        wishesStore.onUpdate = {
+            DispatchQueue.main.async { [weak self] in
+                self?.updateSnapshot()
+            }
+        }
+        
+        wishesStore.onRemove = { wish in
+            DispatchQueue.main.async { [weak self] in
+                self?.updateSnapshot(removing: [wish])
+            }
+        }
+        
         dataSource = DataSource(tableView: tableView) { [weak self] tableView, indexPath, row in
             self?.handleCellConfiguration(for: indexPath, row: row)
         }
@@ -120,8 +162,16 @@ private extension WishStoringTableViewController {
 
         var contentConfiguration = cell.textFieldConfiguration()
         contentConfiguration.placeholder = Constants.Strings.textFieldPlaceholder
-        contentConfiguration.onSubmit = { _ in
-            // TODO: Add to the Store.
+        contentConfiguration.onSubmit = { [weak self] title in
+            guard let self else { return}
+            let wish = Wish(title: title)
+            
+            if !self.wishesStore.add(wish) {
+                self.showAlert(
+                    Constants.Strings.wishAlreadyExistsAlertTitle,
+                    message: Constants.Strings.wishAlreadyExistsAlertMessage
+                )
+            }
         }
         
         cell.contentConfiguration = contentConfiguration
