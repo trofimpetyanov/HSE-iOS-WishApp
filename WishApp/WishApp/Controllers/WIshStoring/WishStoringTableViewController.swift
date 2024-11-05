@@ -14,8 +14,12 @@ final class WishStoringTableViewController: UITableViewController {
             
             static let wishAlreadyExistsAlertTitle = "Wish already exist!"
             static let wishAlreadyExistsAlertMessage = "Try to come up with a new wish or fulfill this one"
-            static let alertCancelButton = "OK"
+            static let editWishAlertTitle = "Edit the wish"
             
+            static let alertSaveButton = "Save"
+            static let alertCancelButton = "Cancel"
+            
+            static let editAction = "Edit"
             static let deleteAction = "Delete"
         }
     }
@@ -47,44 +51,10 @@ final class WishStoringTableViewController: UITableViewController {
         
         updateSnapshot()
     }
-    
-    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        guard
-            let item = dataSource.itemIdentifier(for: indexPath),
-            case .wish(let wish) = item
-        else { return nil }
-        
-        let deleteAction = UIContextualAction(
-            style: .destructive,
-            title: Constants.Strings.deleteAction
-        ) { [weak self] _, _, completion in
-            self?.wishesStore.remove(wish)
-            
-            completion(true)
-        }
-        
-        deleteAction.image = UIImage(systemName: "trash")
-        
-        return UISwipeActionsConfiguration(actions: [deleteAction])
-    }
 
-    private func updateSnapshot() {
-        let wishes = wishesStore.wishes.map { Row.wish($0) }
-        
-        var snapshot = Snapshot()
-        snapshot.appendSections([.newWish, .wishes])
-        snapshot.appendItems([.newWish], toSection: .newWish)
-        snapshot.appendItems(wishes, toSection: .wishes)
-        dataSource.apply(snapshot)
-    }
+    // MARK: – Methods
     
-    private func updateSnapshot(removing wishes: [Wish]) {
-        let rows = wishes.map { Row.wish($0) }
-        var snapshot = dataSource.snapshot()
-        snapshot.deleteItems(rows)
-        dataSource.apply(snapshot)
-    }
-    
+    // MARK: Setup
     private func setupNavigationBar() {
         title = Constants.Strings.title
         navigationController?.navigationBar.prefersLargeTitles = true
@@ -122,10 +92,115 @@ final class WishStoringTableViewController: UITableViewController {
         }
     }
     
-    private func showAlert(_ title: String, message: String? = nil) {
-        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let cancelAction = UIAlertAction(title: Constants.Strings.alertCancelButton, style: .cancel)
+    // MARK: Update
+    private func updateSnapshot() {
+        let wishes = wishesStore.wishes.map { Row.wish($0) }
         
+        var snapshot = Snapshot()
+        snapshot.appendSections([.newWish, .wishes])
+        snapshot.appendItems([.newWish], toSection: .newWish)
+        snapshot.appendItems(wishes, toSection: .wishes)
+        dataSource.apply(snapshot)
+    }
+    
+    private func updateSnapshot(removing wishes: [Wish]) {
+        let rows = wishes.map { Row.wish($0) }
+        var snapshot = dataSource.snapshot()
+        snapshot.deleteItems(rows)
+        dataSource.apply(snapshot)
+    }
+    
+    // MARK: Helpers
+    private func deleteAction(forRowAt indexPath: IndexPath) -> UIContextualAction? {
+        guard
+            let item = dataSource.itemIdentifier(for: indexPath),
+            case .wish(let wish) = item
+        else { return nil }
+        
+        let deleteAction = UIContextualAction(
+            style: .destructive,
+            title: Constants.Strings.deleteAction
+        ) { [weak self] _, _, completion in
+            self?.wishesStore.remove(wish)
+            
+            completion(true)
+        }
+        
+        deleteAction.image = UIImage(systemName: "trash")
+        
+        return deleteAction
+    }
+    
+    private func editAction(forRowAt indexPath: IndexPath) -> UIContextualAction? {
+        guard
+            let item = dataSource.itemIdentifier(for: indexPath),
+            case .wish(let wish) = item
+        else { return nil }
+        
+        let editAction = UIContextualAction(
+            style: .normal,
+            title: Constants.Strings.editAction
+        ) { [weak self] _, _, completion in
+            self?.showEditAlert(for: wish)
+            
+            completion(true)
+        }
+        
+        editAction.image = UIImage(systemName: "pencil")
+        
+        return editAction
+    }
+    
+    // MARK: Alerts
+    private func showAlert(_ title: String, message: String? = nil) {
+        let alertController = UIAlertController(
+            title: title,
+            message: message,
+            preferredStyle: .alert
+        )
+        
+        let cancelAction = UIAlertAction(
+            title: Constants.Strings.alertCancelButton,
+            style: .cancel
+        )
+        
+        alertController.addAction(cancelAction)
+        
+        present(alertController, animated: true)
+    }
+    
+    private func showEditAlert(for wish: Wish) {
+        let alertController = UIAlertController(
+            title: Constants.Strings.editWishAlertTitle,
+            message: nil,
+            preferredStyle: .alert
+        )
+        
+        let saveAction = UIAlertAction(
+            title: Constants.Strings.alertSaveButton,
+            style: .default,
+            handler: { [weak self, weak alertController] _ in
+                guard
+                    let result = alertController?.textFields?[0].text,
+                    !result.isEmpty
+                else { return }
+                
+                let updatedWish = Wish(uuid: wish.uuid, title: result)
+                self?.wishesStore.update(updatedWish)
+            }
+        )
+        
+        let cancelAction = UIAlertAction(
+            title: Constants.Strings.alertCancelButton,
+            style: .cancel
+        )
+        
+        alertController.addTextField { textField in
+            textField.text = wish.title
+            textField.placeholder = Constants.Strings.textFieldPlaceholder
+        }
+        
+        alertController.addAction(saveAction)
         alertController.addAction(cancelAction)
         
         present(alertController, animated: true)
@@ -137,9 +212,28 @@ final class WishStoringTableViewController: UITableViewController {
     }
 }
 
+// MARK: – Table View Delegate
+extension WishStoringTableViewController {
+    override func tableView(
+        _ tableView: UITableView,
+        trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
+    ) -> UISwipeActionsConfiguration? {
+
+        var actions: [UIContextualAction] = []
+        
+        if let deleteAction = deleteAction(forRowAt: indexPath) { actions.append(deleteAction) }
+        if let editAction = editAction(forRowAt: indexPath) { actions.append(editAction) }
+        
+        return UISwipeActionsConfiguration(actions: actions)
+    }
+}
+
 // MARK: – Configurations
 private extension WishStoringTableViewController {
-    func handleCellConfiguration(for indexPath: IndexPath, row: Row) -> UITableViewCell {
+    func handleCellConfiguration(
+        for indexPath: IndexPath,
+        row: Row
+    ) -> UITableViewCell {
         guard let section = dataSource.sectionIdentifier(for: indexPath.section)
         else { return UITableViewCell() }
         
@@ -157,7 +251,11 @@ private extension WishStoringTableViewController {
         return cell ?? UITableViewCell()
     }
     
-    func handleAddWishConfiguration(cell: UITableViewCell?, indexPath: IndexPath, row: Row) {
+    func handleAddWishConfiguration(
+        cell: UITableViewCell?,
+        indexPath: IndexPath,
+        row: Row
+    ) {
         guard let cell, case .newWish = row else { return }
 
         var contentConfiguration = cell.textFieldConfiguration()
@@ -177,7 +275,11 @@ private extension WishStoringTableViewController {
         cell.contentConfiguration = contentConfiguration
     }
     
-    func handleWishConfiguration(cell: UITableViewCell?, indexPath: IndexPath, row: Row) {
+    func handleWishConfiguration(
+        cell: UITableViewCell?,
+        indexPath: IndexPath,
+        row: Row
+    ) {
         guard let cell, case .wish(let wish) = row else { return }
 
         var contentConfiguration = cell.defaultContentConfiguration()

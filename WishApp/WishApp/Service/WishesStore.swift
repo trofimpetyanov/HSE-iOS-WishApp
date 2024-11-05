@@ -40,6 +40,19 @@ class WishesStore {
     }
     
     @discardableResult
+    func update(_ wish: Wish) -> Bool {
+        guard let index = wishes.firstIndex(where: { $0.uuid == wish.uuid })
+        else { return false }
+        
+        wishes[index] = wish
+        
+        save()
+        onUpdate?()
+        
+        return true
+    }
+    
+    @discardableResult
     func remove(_ wish: Wish) -> Wish? {
         guard let index = wishes.firstIndex(where: { $0 == wish })
         else { return nil }
