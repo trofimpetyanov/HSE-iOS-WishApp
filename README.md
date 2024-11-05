@@ -1,19 +1,31 @@
-HW-2 Questions
+**HW-3**
 
-* What issues prevent us from using storyboards in real projects?  
-  Merge conflict problems, performance issues in large projects, difficult to debug.
+1. **When run `WishMakerViewController` shows a write down button.** ✅
 
-* What does the code on lines 25 and 29 do?  
-  Turns off authorizing mask to enable manual constraints, sets text and font, adds label to the superview.
+2. **Pressing the button shows a new `WishStoringViewController`.** ✅
 
-* What is a safe area layout guide?  
-  It contains anchors for safe area, an area in which all the UI elements should be in order to display normally, ex. it has a padding from the dynamic island.
+3. **WishStoringViewController has a table view.** ✅
 
-* What is [weak self] on line 23 and why it is important?  
-  To prevent retain cycle (cycle where two objects have a strong reference to one another resulting in memory leaks).
+4. **The table has cells.** ✅
 
-* What does clipsToBounds mean?  
-  When it is turned on, all the subviews will not stick out from the super view.
+5. **Cells are divided into two groups: `AddWishCell` and `WrittenWishCell`.** ✅
+   - Cells are modular, using `UIContentConfiguration` for better reusability and separation of logic.
 
-* What is the valueChanged type? What is Void and what is Double?  
-  It is a closure. Double is the type of the parameter and Void is the return type.
+6. **Wishes created via `AddWishCell` are added to the list of written wishes.** ✅
+   - The app instantly adds new wishes in the list using diffable data source snapshots. This ensures smooth animations and eliminates the need for manually calculating data changes.
+
+7. **Written wishes are saved in UserDefaults and are shown on reopening the app.** ✅
+   - Wishes are stored and retrieved from `UserDefaults` using the `UserDefaultStorage` abstraction that conforms to the `Storage` protocol, making future migration to other storage types (e.g., CoreData) very simple.
+
+8. **Written wishes can be deleted.** ✅
+   - Implemented in trailing swipe actions.
+
+9. **Written wishes can be edited.** ✅
+   - Implemented using `UITextField` in `UIAlertController`.
+
+10. **CoreData used to save wishes or share wishes through share.** ❎
+   - While I have not implemented CoreData, the application's architecture has been built with future scalability in mind, ensuring these features can be added without major refactoring.
+
+___
+
+Despite not completing criterion 10, the app is built using modern iOS development practices such as `UIContentConfiguration`, diffable data sources, and modular abstraction layers. All these decisions enhance maintainability, performance, and expandability, deserving a score of 10/10 :)
