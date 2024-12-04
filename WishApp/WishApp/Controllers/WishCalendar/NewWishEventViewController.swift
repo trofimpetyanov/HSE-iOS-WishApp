@@ -67,6 +67,7 @@ final class NewWishEventViewController: UICollectionViewController {
         setupNavigationBar()
         setupDataSource()
         updateSnapshot()
+        updateDates()
     }
     
     // MARK: - Methods
