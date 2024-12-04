@@ -1,15 +1,16 @@
 import UIKit
 
 extension UIColor {
-    typealias RGB = (red: Double, green: Double, blue: Double)
+    typealias RGB = (red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat)
     
     func components() -> RGB {
-        let components = self.cgColor.components ?? [0, 0, 0, 0]
-        let red = components[0]
-        let green = components[1]
-        let blue = components[2]
+        var red: CGFloat = 0
+        var green: CGFloat = 0
+        var blue: CGFloat = 0
+        var alpha: CGFloat = 0
+        getRed(&red, green: &green, blue: &blue, alpha: &alpha)
         
-        return (red, green, blue)
+        return (red, green, blue, alpha)
     }
     
     static func randomRGB() -> RGB {
@@ -17,6 +18,6 @@ extension UIColor {
         let green = Double.random(in: 0...1)
         let blue = Double.random(in: 0...1)
         
-        return (red, green, blue)
+        return (red, green, blue, 1)
     }
 }

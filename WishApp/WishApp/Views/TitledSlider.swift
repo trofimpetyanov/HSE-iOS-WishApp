@@ -5,11 +5,16 @@ final class TitledSlider: UIView {
     //MARK: Constants
     enum Constants {
         enum Layout {
-            static let spacing: CGFloat = 8
+            static let spacing: CGFloat = 4
         }
     }
     
-    lazy var titleLabel = UILabel()
+    lazy var titleLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: UIFont.labelFontSize, weight: .semibold)
+        return label
+    }()
+    
     lazy var slider = UISlider()
     
     var valueChanged: ((Double) -> Void)?
@@ -32,7 +37,6 @@ final class TitledSlider: UIView {
         super.init(frame: .zero)
         
         titleLabel.text = title
-        titleLabel.textColor = .white
         
         slider.minimumValue = Float(minimumValue)
         slider.maximumValue = Float(maximumValue)
@@ -42,14 +46,6 @@ final class TitledSlider: UIView {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    func setTextColor(for backgroundColor: UIColor? = nil) {
-        if let backgroundColor = backgroundColor {
-            titleLabel.textColor = backgroundColor.idealTextColor
-        } else {
-            titleLabel.textColor = .label
-        }
     }
     
     private func setupUI() {

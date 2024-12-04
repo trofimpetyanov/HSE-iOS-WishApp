@@ -1,6 +1,6 @@
 import Foundation
 
-struct UserDefaultStorage<Item: Storagable>: Storage {
+class UserDefaultStorage<Item: Storagable>: Storage {
     typealias Item = Item
     
     private let defaults = UserDefaults.standard

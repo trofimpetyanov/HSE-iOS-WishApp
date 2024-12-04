@@ -2,18 +2,17 @@ import UIKit
 
 final class WishMakerViewController: UIViewController {
     
-    // MARK: Constants
+    // MARK: - Constants
     private enum Constants {
         enum Layout {
             static let zero: CGFloat = 0
             static let spacing: CGFloat = 8
             static let padding: CGFloat = 20
             
-            static let primaryCornerRadius: CGFloat = 20
-            static let secondaryCornerRadius: CGFloat = 16
-            
-            static let primaryButtonHeight: CGFloat = 52
+            static let primaryButtonHeight: CGFloat = 48
             static let secondaryButtonHeight: CGFloat = 40
+            
+            static let cornerRadius: CGFloat = 24
         }
         
         enum Settings {
@@ -21,6 +20,9 @@ final class WishMakerViewController: UIViewController {
             static let sliderMax: Double = 1
             
             static let animationDuratione: TimeInterval = 0.2
+            
+            static let gradientStart: NSNumber = 0.16
+            static let gradientEnd: NSNumber = 0.64
         }
         
         enum Strings {
@@ -35,17 +37,18 @@ final class WishMakerViewController: UIViewController {
             static let colorPicker = "Color Picker"
             
             static let myWishes = "My Wishes"
+            static let scheduleWishes = "Schedule Wishes"
         }
     }
     
-    // MARK: – UI
+    // MARK: - UI
     
     // MARK: Labels
     private lazy var descriptionLabel: UILabel = {
         let label = UILabel()
         label.text = Constants.Strings.description
         label.numberOfLines = 0
-        label.textColor = .white
+        label.textColor = wishColor.color.idealTextColor
         label.font = .preferredFont(forTextStyle: .body)
         
         return label
@@ -76,21 +79,13 @@ final class WishMakerViewController: UIViewController {
         return titledSlider
     }()
     
-    private lazy var blurView: UIVisualEffectView = {
-        let blurEffect = UIBlurEffect(style: .systemUltraThinMaterial)
-        let blurView = UIVisualEffectView(effect: blurEffect)
-        
-        return blurView
-    }()
-    
     // MARK: Buttons
     private lazy var randomizeButton: UIButton = {
-        var configuration = UIButton.Configuration.filled()
+        var configuration = UIButton.Configuration.tinted()
         configuration.title = Constants.Strings.randomize
         configuration.image = UIImage(systemName: "sparkles")
         configuration.imagePadding = Constants.Layout.spacing
-        configuration.cornerStyle = .fixed
-        configuration.background.cornerRadius = Constants.Layout.secondaryButtonHeight
+        configuration.cornerStyle = .capsule
         
         let button = UIButton(configuration: configuration)
         let action = UIAction { [weak self] _ in
@@ -103,12 +98,11 @@ final class WishMakerViewController: UIViewController {
     }()
     
     private lazy var colorPickerButton: UIButton = {
-        var configuration = UIButton.Configuration.filled()
+        var configuration = UIButton.Configuration.tinted()
         configuration.title = Constants.Strings.colorPicker
         configuration.image = UIImage(systemName: "eyedropper")
         configuration.imagePadding = Constants.Layout.spacing
-        configuration.cornerStyle = .fixed
-        configuration.background.cornerRadius = Constants.Layout.secondaryButtonHeight
+        configuration.cornerStyle = .capsule
 
         
         let button = UIButton(configuration: configuration)
@@ -136,7 +130,31 @@ final class WishMakerViewController: UIViewController {
         return button
     }()
     
-    // MARK: Stack Views
+    private lazy var scheduleButton: UIButton = {
+        var configuration = UIButton.Configuration.filled()
+        configuration.title = Constants.Strings.scheduleWishes
+        configuration.cornerStyle = .large
+        
+        let button = UIButton(configuration: configuration)
+        let action = UIAction { [weak self] _ in
+            self?.showCalendar()
+        }
+        
+        button.addAction(action, for: .touchUpInside)
+        
+        return button
+    }()
+    
+    // MARK: Views
+    private lazy var gradientLayer = CAGradientLayer()
+    
+    private lazy var blurView: UIVisualEffectView = {
+        let blurEffect = UIBlurEffect(style: .systemUltraThinMaterial)
+        let blurView = UIVisualEffectView(effect: blurEffect)
+        
+        return blurView
+    }()
+    
     private lazy var slidersStackView: UIStackView = {
         let stackView = UIStackView()
         
@@ -150,11 +168,38 @@ final class WishMakerViewController: UIViewController {
         return stackView
     }()
     
-    private lazy var buttonsStackView: UIStackView = {
+    private lazy var colorButtonsStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.spacing = Constants.Layout.spacing
         stackView.addArrangedSubview(randomizeButton)
         stackView.addArrangedSubview(colorPickerButton)
+        return stackView
+    }()
+    
+    private lazy var colorControlsStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = Constants.Layout.spacing
+        stackView.addArrangedSubview(slidersStackView)
+        stackView.addArrangedSubview(colorButtonsStackView)
+        return stackView
+    }()
+    
+    private lazy var colorControlsView: UIView = {
+        let view = UIView()
+        view.clipsToBounds = true
+        view.layer.cornerRadius = Constants.Layout.cornerRadius
+        view.addSubview(blurView)
+        view.addSubview(colorControlsStackView)
+        return view
+    }()
+    
+    private lazy var primaryControlsStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = Constants.Layout.spacing
+        stackView.addArrangedSubview(myWishesButton)
+        stackView.addArrangedSubview(scheduleButton)
         return stackView
     }()
     
@@ -163,20 +208,12 @@ final class WishMakerViewController: UIViewController {
         stackView.axis = .vertical
         stackView.spacing = Constants.Layout.spacing
         stackView.addArrangedSubview(slidersStackView)
-        stackView.addArrangedSubview(buttonsStackView)
+        stackView.addArrangedSubview(colorControlsView)
         return stackView
     }()
     
-    private lazy var controlsView: UIView = {
-        let view = UIView()
-        view.clipsToBounds = true
-        view.layer.cornerRadius = Constants.Layout.primaryCornerRadius
-        view.addSubview(blurView)
-        view.addSubview(controlsStackView)
-        return view
-    }()
-    
-    // MARK: – Properties
+    // MARK: - Properties
+    private let dependenciesContainer: DependenciesContainer
     private var areControlsHidden = false
     
     private var wishColor = WishColor() {
@@ -185,23 +222,48 @@ final class WishMakerViewController: UIViewController {
         }
     }
     
-    //MARK: – Life Cycle
+    init(dependenciesContainer: DependenciesContainer) {
+        self.dependenciesContainer = dependenciesContainer
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    //MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupUI()
+        randomizeColor()
     }
     
-    // MARK: – Methods
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        gradientLayer.frame = view.bounds
+    }
+    
+    // MARK: - Methods
     
     // MARK: Setup
     private func setupUI() {
-        view.backgroundColor = wishColor.color
-        
+        setupBackground()
         setupNavigationBar()
         setupLabels()
-        setupMyWishesButton()
-        setupControls()
+        setupPrimaryControls()
+        setupColorControls()
+    }
+    
+    private func setupBackground() {
+        view.backgroundColor = .systemBackground
+        view.layer.addSublayer(gradientLayer)
+        
+        registerForTraitChanges(
+            [UITraitUserInterfaceStyle.self]
+        ) { (self: Self, previousTraitCollection: UITraitCollection) in
+            self.updateUI()
+        }
     }
     
     private func setupNavigationBar() {
@@ -213,11 +275,13 @@ final class WishMakerViewController: UIViewController {
             self?.toggleControls()
         }
         
+        let image = UIImage(systemName: "eye.slash") ?? .actions
         let settingsBarButtonItem = UIBarButtonItem(
-            image: UIImage(systemName: "slider.horizontal.2.square"),
+            image: image,
             primaryAction: showControlsAction
         )
-        
+        settingsBarButtonItem.setSymbolImage(image, contentTransition: .automatic)
+        settingsBarButtonItem.tintColor = wishColor.color.idealTextColor
         navigationItem.rightBarButtonItem = settingsBarButtonItem
     }
     
@@ -230,57 +294,79 @@ final class WishMakerViewController: UIViewController {
         )
     }
     
-    private func setupMyWishesButton() {
-        view.addSubview(myWishesButton)
-        myWishesButton.pinHeight(Constants.Layout.primaryButtonHeight)
-        myWishesButton.pinEdges(
+    private func setupPrimaryControls() {
+        view.addSubview(primaryControlsStackView)
+        [myWishesButton, scheduleButton].forEach { button in
+            button.pinHeight(Constants.Layout.primaryButtonHeight)
+        }
+        
+        primaryControlsStackView.pinEdges(
             [.leading, .trailing, .bottom],
             to: view,
             constant: Constants.Layout.padding
         )
     }
     
-    private func setupControls() {
-        // Controls View
-        view.addSubview(controlsView)
-        controlsView.pinHorizontal(to: view, Constants.Layout.padding)
-        controlsView.pinBottomToTop(of: myWishesButton, constant: Constants.Layout.padding)
+    private func setupColorControls() {
+        // Controls Stack View
+        view.addSubview(colorControlsView)
+        colorControlsView.pinHorizontal(to: view, Constants.Layout.padding)
+        colorControlsView.pinBottomToTop(of: primaryControlsStackView, constant: Constants.Layout.padding)
         
         // Blur View
         blurView.pinEdges(
             UIView.Edge.allCases,
-            to: controlsView,
+            to: colorControlsView,
             constant: Constants.Layout.zero
         )
         
-        // Controls Stack View
-        controlsStackView.pinEdges(
+        // Color Controls Stack View
+        colorControlsStackView.pinEdges(
             UIView.Edge.allCases,
-            to: controlsView,
+            to: colorControlsView,
             constant: Constants.Layout.spacing
         )
         
-        // Control Buttons
-        randomizeButton.pinHeight(Constants.Layout.secondaryButtonHeight)
-        colorPickerButton.pinHeight(Constants.Layout.secondaryButtonHeight)
+        [randomizeButton, colorPickerButton].forEach { button in
+            button.pinHeight(Constants.Layout.secondaryButtonHeight)
+        }
     }
     
     // MARK: Update
     private func updateUI() {
         navigationController?.navigationBar.largeTitleTextAttributes = [.foregroundColor: wishColor.color.idealTextColor]
         descriptionLabel.textColor = wishColor.color.idealTextColor
+        navigationItem.rightBarButtonItem?.tintColor = wishColor.color.idealTextColor
         
+        let adjustedColor = wishColor.color.adjustedForContrast(with: view.backgroundColor ?? .systemBackground)
+        updateSliders(with: adjustedColor)
+        updateButtons(with: adjustedColor)
+        updateGradient()
+    }
+    
+    private func updateSliders(with color: UIColor) {
         redSlider.slider.setValue(Float(wishColor.red), animated: true)
         greenSlider.slider.setValue(Float(wishColor.green), animated: true)
         blueSlider.slider.setValue(Float(wishColor.blue), animated: true)
         
-        for slider in [redSlider, greenSlider, blueSlider] {
-            slider.setTextColor(for: wishColor.color)
+        [redSlider, greenSlider, blueSlider].forEach { slider in
+            slider.tintColor = color
+        }
+    }
+    
+    private func updateButtons(with color: UIColor) {
+        [randomizeButton, colorPickerButton, myWishesButton, scheduleButton].forEach { button in
+            button.tintColor = color
         }
         
-        UIView.animate(withDuration: Constants.Settings.animationDuratione) {
-            self.view.backgroundColor = self.wishColor.color
+        [myWishesButton, scheduleButton].forEach { button in
+            button.configuration?.baseForegroundColor = color.idealTextColor
         }
+    }
+    
+    private func updateGradient() {
+        gradientLayer.colors = [wishColor.color.cgColor, UIColor.systemBackground.cgColor]
+        gradientLayer.locations = [Constants.Settings.gradientStart, Constants.Settings.gradientEnd]
     }
     
     // MARK: Actions
@@ -291,8 +377,14 @@ final class WishMakerViewController: UIViewController {
         wishColor.blue = randomColor.blue
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        updateGradient()
+    }
+    
     private func showColorPicker() {
         let colorPicker = UIColorPickerViewController()
+        
         colorPicker.title = Constants.Strings.colorPicker
         colorPicker.supportsAlpha = false
         colorPicker.delegate = self
@@ -305,33 +397,48 @@ final class WishMakerViewController: UIViewController {
     private func toggleControls() {
         areControlsHidden.toggle()
         
+        let image = UIImage(systemName: areControlsHidden ? "eye" : "eye.slash") ?? .actions
+        navigationItem.rightBarButtonItem?.setSymbolImage(image, contentTransition: .automatic)
+        
         if areControlsHidden {
             UIView.animate(withDuration: Constants.Settings.animationDuratione) {
-                self.controlsView.alpha = self.areControlsHidden ? 0 : 1
+                self.colorControlsView.alpha = self.areControlsHidden ? 0 : 1
             } completion: { _ in
-                self.controlsView.isHidden = self.areControlsHidden
+                self.colorControlsView.isHidden = self.areControlsHidden
             }
         } else {
-            controlsView.isHidden = false
+            colorControlsView.isHidden = false
             
             UIView.animate(withDuration: Constants.Settings.animationDuratione) {
-                self.controlsView.alpha = self.areControlsHidden ? 0 : 1
+                self.colorControlsView.alpha = self.areControlsHidden ? 0 : 1
             }
         }
     }
     
     // MARK: Navigation
     private func showMyWishes() {
-        let wishStoringTableViewController = WishStoringTableViewController()
-        let navigationController = UINavigationController(rootViewController: wishStoringTableViewController)
+        let wishStoringTableViewController = WishStoringTableViewController(
+            dependenciesContainer: dependenciesContainer
+        )
         
+        let navigationController = UINavigationController(rootViewController: wishStoringTableViewController)
+        present(navigationController, animated: true)
+    }
+    
+    private func showCalendar() {
+        let wishCalendarViewController = WishCalendarViewController(
+            dependenciesContainer: dependenciesContainer,
+            wishColor: wishColor
+        )
+        
+        let navigationController = UINavigationController(rootViewController: wishCalendarViewController)
         present(navigationController, animated: true)
     }
 }
 
 extension WishMakerViewController: UIColorPickerViewControllerDelegate {
     func colorPickerViewController(_ viewController: UIColorPickerViewController, didSelect color: UIColor, continuously: Bool) {
-        let (red, green, blue) = color.components()
+        let (red, green, blue, _) = color.components()
         wishColor.red = red
         wishColor.green = green
         wishColor.blue = blue

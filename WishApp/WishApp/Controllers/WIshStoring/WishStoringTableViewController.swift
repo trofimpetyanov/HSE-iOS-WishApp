@@ -1,7 +1,13 @@
 import UIKit
 
+// MARK: - WishStoringTableViewControllerDelegate
+protocol WishStoringTableViewControllerDelegate: AnyObject {
+    func wishStoringTableViewController(_ controller: WishStoringTableViewController, didSelectWish wish: Wish)
+}
+
 final class WishStoringTableViewController: UITableViewController {
     
+    // MARK: - Constants
     private enum Constants {
         enum Identifiers {
             static let newWish = "newWishCell"
@@ -24,16 +30,17 @@ final class WishStoringTableViewController: UITableViewController {
         }
     }
     
-    private var wishesStore: WishesStore
+    // MARK: - Properties
+    private let dependenciesContainer: DependenciesContainer
+    private let wishesStore: WishesStore
+    
     private var dataSource: DataSource!
     
-    init(storageType: WishesStore.StorageType = .coreData) {
-        switch storageType {
-        case .userDefaults:
-            wishesStore = WishesStore(storage: UserDefaultStorage<Wish>())
-        case .coreData:
-            wishesStore = WishesStore(storage: UserDefaultStorage<Wish>())
-        }
+    weak var delegate: WishStoringTableViewControllerDelegate?
+    
+    init(dependenciesContainer: DependenciesContainer) {
+        self.dependenciesContainer = dependenciesContainer
+        self.wishesStore = dependenciesContainer.wishesStore
         
         super.init(style: .insetGrouped)
     }
@@ -42,6 +49,7 @@ final class WishStoringTableViewController: UITableViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -51,24 +59,33 @@ final class WishStoringTableViewController: UITableViewController {
         
         updateSnapshot()
     }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        guard let wish = dataSource.itemIdentifier(for: indexPath), case .wish(let wish) = wish
+        else { return }
+        
+        delegate?.wishStoringTableViewController(self, didSelectWish: wish)
+    }
 
-    // MARK: – Methods
+    // MARK: - Methods
     
     // MARK: Setup
     private func setupNavigationBar() {
         title = Constants.Strings.title
         navigationController?.navigationBar.prefersLargeTitles = true
         
-        let closeAction = UIAction { [weak self] _ in self?.dismiss(animated: true) }
-        navigationItem.leftBarButtonItem = UIBarButtonItem(systemItem: .close, primaryAction: closeAction)
+        if delegate == nil {
+            let closeAction = UIAction { [weak self] _ in self?.dismiss(animated: true) }
+            navigationItem.leftBarButtonItem = UIBarButtonItem(systemItem: .close, primaryAction: closeAction)
+        }
     }
     
     private func setupTableView() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
-        tapGesture.cancelsTouchesInView = true
+        tapGesture.cancelsTouchesInView = false
         tableView.addGestureRecognizer(tapGesture)
-        
-        tableView.allowsSelection = false
         
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: Constants.Identifiers.newWish)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: Constants.Identifiers.wish)
@@ -93,7 +110,7 @@ final class WishStoringTableViewController: UITableViewController {
     }
     
     // MARK: Update
-    private func updateSnapshot() {
+    func updateSnapshot() {
         let wishes = wishesStore.wishes.map { Row.wish($0) }
         
         var snapshot = Snapshot()
@@ -103,7 +120,7 @@ final class WishStoringTableViewController: UITableViewController {
         dataSource.apply(snapshot)
     }
     
-    private func updateSnapshot(removing wishes: [Wish]) {
+    func updateSnapshot(removing wishes: [Wish]) {
         let rows = wishes.map { Row.wish($0) }
         var snapshot = dataSource.snapshot()
         snapshot.deleteItems(rows)
@@ -212,7 +229,7 @@ final class WishStoringTableViewController: UITableViewController {
     }
 }
 
-// MARK: – Table View Delegate
+// MARK: - Table View Delegate
 extension WishStoringTableViewController {
     override func tableView(
         _ tableView: UITableView,
@@ -228,7 +245,7 @@ extension WishStoringTableViewController {
     }
 }
 
-// MARK: – Configurations
+// MARK: - Configurations
 private extension WishStoringTableViewController {
     func handleCellConfiguration(
         for indexPath: IndexPath,
@@ -260,8 +277,8 @@ private extension WishStoringTableViewController {
 
         var contentConfiguration = cell.textFieldConfiguration()
         contentConfiguration.placeholder = Constants.Strings.textFieldPlaceholder
-        contentConfiguration.onSubmit = { [weak self] title in
-            guard let self else { return}
+        contentConfiguration.onReturn = { [weak self] title in
+            guard let self else { return }
             let wish = Wish(title: title)
             
             if !self.wishesStore.add(wish) {

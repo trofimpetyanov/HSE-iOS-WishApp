@@ -13,7 +13,5 @@ struct Wish {
 extension Wish: Hashable { }
 
 extension Wish: Storagable {
-    static var storageName: String {
-        "wishes"
-    }
+    static var storageName: String { "wishes" }
 }
