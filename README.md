@@ -1,31 +1,23 @@
-**HW-3**
+**HW-4**
 
-1. **When run `WishMakerViewController` shows a write down button.** ✅
+1. **Add new button for scheduling wish-granting activity.** ✅
 
-2. **Pressing the button shows a new `WishStoringViewController`.** ✅
+2. **Buttons color changes depending on the background color.** ✅
 
-3. **WishStoringViewController has a table view.** ✅
+3. **Pressing the schedule button pushes `WishCalendarViewController`.** ✅
 
-4. **The table has cells.** ✅
+4. **`WishCalendarViewController` has a collection view in it.** ✅
 
-5. **Cells are divided into two groups: `AddWishCell` and `WrittenWishCell`.** ✅
-   - Cells are modular, using `UIContentConfiguration` for better reusability and separation of logic.
+5. **`WishEventCells` can be created with event title, description, start and end dates.** ✅
 
-6. **Wishes created via `AddWishCell` are added to the list of written wishes.** ✅
-   - The app instantly adds new wishes in the list using diffable data source snapshots. This ensures smooth animations and eliminates the need for manually calculating data changes.
+6. **Events for cells can be created in a popup shown using `present()`.** ✅
 
-7. **Written wishes are saved in UserDefaults and are shown on reopening the app.** ✅
-   - Wishes are stored and retrieved from `UserDefaults` using the `UserDefaultStorage` abstraction that conforms to the `Storage` protocol, making future migration to other storage types (e.g., CoreData) very simple.
+7. **Event is created in the calendar.** ✅
+   
+8. **Events are saved in app so that they stay after the app is closed.** ✅
 
-8. **Written wishes can be deleted.** ✅
-   - Implemented in trailing swipe actions.
+9. **A wish can be picked from saved wished list when scheduling an event.** ✅
 
-9. **Written wishes can be edited.** ✅
-   - Implemented using `UITextField` in `UIAlertController`.
-
-10. **CoreData used to save wishes or share wishes through share.** ❎
-   - While I have not implemented CoreData, the application's architecture has been built with future scalability in mind, ensuring these features can be added without major refactoring.
-
-___
-
-Despite not completing criterion 10, the app is built using modern iOS development practices such as `UIContentConfiguration`, diffable data sources, and modular abstraction layers. All these decisions enhance maintainability, performance, and expandability, deserving a score of 10/10 :)
+10. **The color picked on the `WishMakerViewController` is now passed to be
+background color for other screens.** ❎
+   - Setting the background looks ugly, so I've implemented small details such as the colored plus button and the event cell border.
